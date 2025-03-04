@@ -1,0 +1,505 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Schedule</h4>
+</div>
+
+<div class="page-content row g-3">
+
+    <div class="col-sm-12 gap-3 d-flex flex-column" style="height: calc(100vh - 11vh)">
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="title-font pb-3">Course Subject</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="search-wrapper">
+                            <button class="icon-button" onclick="toggleSearch()">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#736b68" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                              </svg>
+        
+                            </button>
+                            <div class="search-input" id="searchContainer">
+                              <input type="text" id="searchInput" placeholder="Search..." oninput="searchJO()">
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-1">
+                            <!-- Filter -->
+                            <div class="filter-container">
+                                <button class="filter-button icon-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#736b68" class="bi bi-funnel" viewBox="0 0 16 16">
+                                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                                        </svg>
+                                </button>                    
+                                <div class="filter-panel">
+                                    <div class="filter-section" style="--index: 1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h2 class="chart-title">Courses</h2>
+                                            <button class="clear-btn">Clear</button>
+                                        </div>
+                                        
+                                        <select class="select-input">
+                                            <option value="">Select courses</option>
+                                            {% for course in courses %}
+                                                <option value="{{course.course}}">{{course.course}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                <div class="action-buttons">
+                                    <button class="normal-button" id="filterbutton">Filter</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>                         
+                    </div>         
+                </div>
+                
+                <!-- List of subjects -->
+                <div class="subjectsList-container border rounded-3" id="open-subject">
+                    {% if subjects %}
+                        {% for subject in subjects %}
+                            <div class="subject-card rounded-0 shadow-none border-0 border-bottom">
+                                <div class="subject-card-header">
+                                    <div class="d-flex align-items-center">
+                                        <div class="subject-icon">📚</div>
+                                        <div class="subject-info">
+                                            <h4>{{subject.course_code}}: {{subject.course_title}}</h4>                                                 
+                                            <div class="d-flex gap-2">
+                                                <!-- This is the course -->
+                                                <p>{{subject.course.course}}</p>
+                                                <p>• {{subject.semester}} • {% if subject.subject_section.all.count %}{{subject.subject_section.all.count}} Section{% if subject.subject_section.all.count > 1 %}s{%endif%} •{% endif %} {% if subject.status %}<span class="text-success">Open</span>{% else %}<span class="text-danger">Close</span>{% endif %}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <div class="d-flex gap-1">
+                                        <button class="view-subject small-button">View</button>
+                                    </div>                                      
+                                </div>
+                                <div class="subject-card-body">
+                                    <div class="section-list">
+                                        <table class="table table-hover shadow-none">
+                                            <thead class="section-table-header ">
+                                                <tr>
+                                                    <th class="fw-normal">Section</th>
+                                                    <th class="fw-normal">Room</th>
+                                                    <th class="fw-normal">Schedule</th>
+                                                    <th class="fw-normal text-center">Students</th>
+                                                    <th class="fw-normal text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="section-table-body open-all-request" id="jo-table">
+                                                {% for section in subject.subject_section.all %}
+                                                <tr>
+                                                    <td>{{section.section}}</td>
+                                                    <td>{{section.room}}</td>
+                                                    <td>{{section.day|slice:":3"}} {{section.time_from|date:"h:i A"}} - {{section.time_to|date:"h:i A"}}</td>
+                                                    <td class="text-center">{{section.student_section.count}}/{{section.capacity}}</td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <button class="small-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#class{{section.id}}" aria-controls="class{{section.id}}">View Class</button>
+                                                        </div>
+
+                                                        <!-- View Section Offcanvas -->
+                                                        <div class="offcanvas offcanvas-end" tabindex="-1" id="class{{section.id}}" aria-labelledby="class{{section.id}}Label" style="width: 700px;">
+                                                            <div class="offcanvas-header">
+                                                                <h5 class="offcanvas-title" id="class{{section.id}}Label">Section Details</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="offcanvas-body">
+                                                                {% if section.student_section.all %}
+                                                                <table class="table table-hover shadow-none mt-4">
+                                                                    <thead class="open-table-header">
+                                                                        <tr>
+                                                                            <th class="fw-normal">ID Number</th>
+                                                                            <th class="fw-normal">Name</th>
+                                                                            <th class="fw-normal">Course</th>
+                                                                            <th class="fw-normal">Year</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody class="sectionview-table-body open-all-request" id="jo-table">     
+                                                                            {% for student in section.student_section.all %}
+                                                                                <tr>
+                                                                                    <td>{{student.student.id_number}}</td>
+                                                                                    <td>{{student.student.name}}</td>
+                                                                                    <td>{{student.student.student_info.course.course}}</td>
+                                                                                    <td>{{student.student.student_info.year_level}}</td>
+                                                                                </tr>
+                                                                            {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                                {% else %}
+                                                                    <div class="h-100 d-flex justify-content-center align-items-center">
+                                                                        <p class="title-font">This section has no enrolled students.</p>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="h-100 d-flex justify-content-center align-items-center">
+                        <p class="title-font">You don't have a confirmed schedule at this time.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Toggle Search
+    function toggleSearch() {
+        document.getElementById('searchContainer').classList.toggle('active');
+      }
+
+      let searchTimeout;
+
+      function searchJO() {
+          clearTimeout(searchTimeout); 
+
+          searchTimeout = setTimeout(() => {
+            handleJoSearch();
+          }, 1000);
+      }
+
+      function handleJoSearch() {
+          let input = document.getElementById("searchInput").value.toLowerCase();
+          let subjects = document.querySelectorAll("#open-subject .subject-card");
+      
+          subjects.forEach(subject => {
+              let subjectTitle = subject.querySelector(".subject-info h4").innerText.toLowerCase();
+              let professorInfo = subject.querySelector(".subject-info p").innerText.toLowerCase();
+      
+              if (subjectTitle.includes(input) || professorInfo.includes(input)) {
+                  subject.style.display = "block";
+              } else {
+                  subject.style.display = "none"; 
+              }
+          });
+      }
+
+      // Subject Toggle
+      const addButtons = document.querySelectorAll('.view-subject');
+      addButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.subject-card');
+          // Toggle the "open" class to slide down/up the subject-card-body
+          card.classList.toggle('open');
+
+        });
+      });
+  
+  
+      // Enroll Button
+      const enrollButtons = document.querySelectorAll('.enroll-btn');
+      enrollButtons.forEach((enrollBtn) => {
+        enrollBtn.addEventListener('click', () => {
+          enrollBtn.textContent = 'Enrolled';
+          enrollBtn.disabled = true;
+            const sectionName = enrollBtn
+            .closest('li')
+            .querySelector('.section-info strong').textContent;
+          alert(`You have enrolled in ${sectionName}!`);
+        });
+      });
+
+    // Filter
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButton = document.querySelector('.filter-button');
+        const filterPanel = document.querySelector('.filter-panel');
+        const clearButtons = document.querySelectorAll('.clear-btn');
+        const resetButton = document.querySelector('.reset-btn');
+        const inputs = document.querySelectorAll('input, select');
+        
+        filterButton.addEventListener('click', function() {
+        filterPanel.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', function(event) {
+        if (!filterPanel.contains(event.target) && !filterButton.contains(event.target)) {
+            filterPanel.classList.remove('active');
+        }
+        });
+        
+        clearButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const section = button.closest('.filter-section');
+            const sectionInputs = section.querySelectorAll('input, select');
+            sectionInputs.forEach(input => {
+            input.value = '';
+            });
+        });
+        });
+        
+        resetButton.addEventListener('click', function() {
+        inputs.forEach(input => {
+            input.value = '';
+        });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterButton = document.getElementById("filterbutton");
+        const selectInput = document.querySelector(".select-input");
+        const subjectCards = document.querySelectorAll(".subject-card");
+    
+        filterButton.addEventListener("click", function () {
+            const selectedCourse = selectInput.value.toLowerCase();
+    
+            subjectCards.forEach((subjectCard) => {
+                const courseElement = subjectCard.querySelector(".subject-info p");
+                
+                if (courseElement) {
+                    const courseText = courseElement.textContent.toLowerCase();
+    
+                    if (selectedCourse === "" || courseText.includes(selectedCourse)) {
+                        subjectCard.style.display = "block";
+                    } else {
+                        subjectCard.style.display = "none";
+                    }
+                }
+            });
+        });
+    });
+
+    // Get Subject
+    document.addEventListener('DOMContentLoaded', function() {
+        const courseDropdown = document.getElementById('courseDropdown');
+        const subjectDropdown = document.getElementById('subjectDropdown');
+
+        courseDropdown.addEventListener('change', function() {
+            const selectedCourseId = this.value;
+            subjectDropdown.innerHTML = '<option selected disabled value="">Choose...</option>';
+            if (selectedCourseId) {
+                fetchOpenSubjects(selectedCourseId);
+            }
+        });
+        
+        function fetchOpenSubjects(courseId) {
+            fetch(`/admin/get-open-subjects/${courseId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.subjects.forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject.id;
+                        option.textContent = `${subject.course_code}: ${subject.course_title}`;
+                        subjectDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching subjects:', error);
+                });
+        }
+    });
+
+    //Professor Schedule Display
+    function updateProfessorConflicts() {
+        const day = document.getElementById('scheduleDay').value;
+        const timeFrom = document.getElementById('startTime').value;
+        const timeTo = document.getElementById('endTime').value;
+        
+        if (!day || !timeFrom || !timeTo) {
+            // Reset all options if not all required fields are filled
+            const options = document.querySelectorAll('#professorDropdown option');
+            options.forEach(option => {
+                if (option.value) { // Skip the placeholder "Choose..." option
+                    option.style.color = '';
+                    option.innerHTML = option.getAttribute('data-name');
+                }
+            });
+            return;
+        }
+        
+        // Make AJAX call to check all professors for conflicts
+        fetch(`/admin/check-all-professor-conflicts/?day=${day}&time_from=${timeFrom}&time_to=${timeTo}`)
+            .then(response => response.json())
+            .then(data => {
+                // Reset all options first
+                const options = document.querySelectorAll('#professorDropdown option');
+                options.forEach(option => {
+                    if (option.value) { // Skip the placeholder "Choose..." option
+                        option.style.color = '';
+                        option.innerHTML = option.getAttribute('data-name');
+                    }
+                });
+                
+                // Mark options with conflicts
+                data.conflicts.forEach(professorId => {
+                    const option = document.querySelector(`#professorDropdown option[value="${professorId}"]`);
+                    if (option) {
+                        option.style.color = 'red';
+                        option.innerHTML = option.getAttribute('data-name') + ' !';
+                    }
+                });
+            });
+    }
+    
+    // Preserve the existing fetchProfessorSchedule function
+    function fetchProfessorSchedule(professorId) {
+        fetch(`/admin/get_professor_schedule/?professor_id=${professorId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.getElementById('jo-table');
+                tableBody.innerHTML = '';
+    
+                // Get new section schedule values from the form
+                const newDay = document.querySelector('select[name="day"]').value;
+                const newTimeFrom = document.querySelector('input[name="start-time"]').value;
+                const newTimeTo = document.querySelector('input[name="end-time"]').value;
+    
+                // Normalize the new day: take first three letters in lowercase
+                const normalizedNewDay = newDay ? newDay.substring(0, 3).toLowerCase() : '';
+    
+                // Helper: Convert a "HH:MM" string into minutes after midnight
+                function timeToMinutes(timeStr) {
+                    const parts = timeStr.split(':');
+                    return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+                }
+    
+                let newStart = null, newEnd = null;
+                if (newTimeFrom && newTimeTo) {
+                    newStart = timeToMinutes(newTimeFrom);
+                    newEnd = timeToMinutes(newTimeTo);
+                }
+    
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="3">No schedule found for this professor.</td></tr>';
+                } else {
+                    data.forEach(schedule => {
+                        // Create a new table row and set data attributes for later debugging if needed
+                        const row = document.createElement('tr');
+                        row.setAttribute('data-day', schedule.day);
+                        row.setAttribute('data-time-from', schedule.time_from);
+                        row.setAttribute('data-time-to', schedule.time_to);
+    
+                        // Build the row's content
+                        row.innerHTML = `
+                            <td>${schedule.subject}</td>
+                            <td>${schedule.section}</td>
+                            <td>${schedule.day} ${schedule.time_from} - ${schedule.time_to}</td>
+                        `;
+    
+                        // Check for conflict only if the new schedule times are provided
+                        if (newDay && newStart !== null && newEnd !== null && schedule.time_from && schedule.time_to) {
+                            // Normalize the schedule's day (e.g., "Monday" becomes "mon")
+                            const normalizedScheduleDay = schedule.day ? schedule.day.substring(0, 3).toLowerCase() : '';
+                            
+                            // Only compare times if the days match
+                            if (normalizedScheduleDay === normalizedNewDay) {
+                                const rowStart = timeToMinutes(schedule.time_from);
+                                const rowEnd = timeToMinutes(schedule.time_to);
+                                // Conflict condition: newStart < rowEnd AND rowStart < newEnd
+                                if (newStart < rowEnd && rowStart < newEnd) {
+                                    row.classList.add('table-danger');
+                                }
+                            }
+                        }
+                        tableBody.appendChild(row);
+                    });
+                }
+                // Make sure the schedule table is visible
+                document.getElementById('scheduleTable').style.display = 'table';
+            })
+            .catch(error => {
+                console.error('Error fetching professor schedule:', error);
+            });
+    }    
+    
+    // Call updateProfessorConflicts when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const day = document.getElementById('scheduleDay').value;
+        const timeFrom = document.getElementById('startTime').value;
+        const timeTo = document.getElementById('endTime').value;
+        
+        if (day && timeFrom && timeTo) {
+            updateProfessorConflicts();
+        }
+    });
+
+    //Prof Sched Checker
+    document.addEventListener('DOMContentLoaded', function() {
+        const professorSelect = document.querySelector('select[name="professor"]');
+        const daySelect       = document.querySelector('select[name="day"]');
+        const timeFromInput   = document.querySelector('input[name="start-time"]');
+        const timeToInput     = document.querySelector('input[name="end-time"]');
+    
+        function checkProfessorConflict() {
+            const professorId = professorSelect.value;
+            const day         = daySelect.value;
+            const timeFrom    = timeFromInput.value;
+            const timeTo      = timeToInput.value;
+    
+            if (!professorId || !day || !timeFrom || !timeTo) {
+                resetSelectedProfessorOption();
+                return;
+            }
+    
+            fetch(`/admin/check_conflicts/?professor_id=${professorId}&day=${day}&time_from=${timeFrom}&time_to=${timeTo}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const selectedOption = professorSelect.options[professorSelect.selectedIndex];
+                    if (!selectedOption) return;
+    
+                    if (!selectedOption.dataset.originalText) {
+                        selectedOption.dataset.originalText = selectedOption.textContent;
+                    }
+    
+                    if (data.conflict) {
+                        selectedOption.style.color = 'red';
+                        selectedOption.textContent = selectedOption.dataset.originalText + ' ❗';
+                    } else {
+                        resetSelectedProfessorOption();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking conflicts:', error);
+                });
+        }
+    
+        function resetSelectedProfessorOption() {
+            const selectedOption = professorSelect.options[professorSelect.selectedIndex];
+            if (selectedOption && selectedOption.dataset.originalText) {
+                selectedOption.textContent = selectedOption.dataset.originalText;
+                selectedOption.dataset.originalText = '';
+    
+                selectedOption.style.color = '';
+            }
+        }
+    
+        professorSelect.addEventListener('change', checkProfessorConflict);
+        daySelect.addEventListener('change', checkProfessorConflict);
+        timeFromInput.addEventListener('change', checkProfessorConflict);
+        timeToInput.addEventListener('change', checkProfessorConflict);
+    });
+</script>
+
+{% endblock content %}

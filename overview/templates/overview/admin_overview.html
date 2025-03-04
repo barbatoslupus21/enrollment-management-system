@@ -1,0 +1,225 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Overview</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Left Column -->
+    <div class="col-sm-8 gap-3 d-flex flex-column content" style="height: calc(100vh - 11vh)">
+        <!-- Card Counts -->
+        <div class="row gx-3">
+            <div class="col-md-3 col-sm-3">
+                <div class="card metric-card">
+                  <div class="card-body d-flex gap-3 align-items-center">
+                    <div class="metric-icon-container rounded-circle p-3 mr-3" style="background-color: #5BBCFF;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e8eaed" class="bi bi-person-fill" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                          </svg>
+                    </div>
+                    <div class="">
+                      <p class="card-subtitle text-muted mb-1">Students</p>
+                      <h3 class="card-value font-weight-bold mb-0">0004</h3>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-sm-3">
+                <div class="card metric-card">
+                  <div class="card-body d-flex gap-3 align-items-center">
+                    <div class="metric-icon-container rounded-circle p-3 mr-3" style="background-color: #7EA1FF;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e8eaed" class="bi bi-people-fill" viewBox="0 0 16 16">
+                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                          </svg>
+                    </div>
+                    <div class="">
+                      <p class="card-subtitle text-muted mb-1">Professor</p>
+                      <h3 class="card-value font-weight-bold mb-0">0004</h3>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-sm-3">
+                <div class="card metric-card">
+                  <div class="card-body d-flex gap-3 align-items-center">
+                    <div class="metric-icon-container rounded-circle p-3 mr-3" style="background-color: #8576FF;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e8eaed" class="bi bi-layers-fill" viewBox="0 0 16 16">
+                            <path d="M7.765 1.559a.5.5 0 0 1 .47 0l7.5 4a.5.5 0 0 1 0 .882l-7.5 4a.5.5 0 0 1-.47 0l-7.5-4a.5.5 0 0 1 0-.882z"/>
+                            <path d="m2.125 8.567-1.86.992a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882l-1.86-.992-5.17 2.756a1.5 1.5 0 0 1-1.41 0z"/>
+                          </svg>
+                    </div>
+                    <div class="">
+                      <p class="card-subtitle text-muted mb-1">Total Classes</p>
+                      <h3 class="card-value font-weight-bold mb-0">0004</h3>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-3">
+                <div class="card metric-card">
+                  <div class="card-body d-flex gap-3 align-items-center">
+                    <div class="metric-icon-container rounded-circle p-3 mr-3" style="background-color: #F6995C;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#e8eaed" class="bi bi-bookmarks-fill" viewBox="0 0 16 16">
+                            <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5z"/>
+                            <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1z"/>
+                          </svg>
+                    </div>
+                    <div class="">
+                      <p class="card-subtitle text-muted mb-1">New Enrollments</p>
+                      <h3 class="card-value font-weight-bold mb-0">0004</h3>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Schedule -->
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center pb-2">
+                    <h2 class="title-font">Class Schedules & Teacher Assignments</h2>
+                    <a href=""><button class="submit-button">Manage Class</button></a>
+                </div>
+                
+                <table class="table table-hover shadow-none mt-2">
+                    <thead class="open-table-header">
+                        <tr>
+                            <th class="fw-normal">Subject</th>
+                            <th class="fw-normal">Section</th>
+                            <th class="fw-normal">Schedule</th>
+                            <th class="fw-normal">Professor</th>
+                            <th class="fw-normal text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="open-table-body open-all-request" id="jo-table">
+                        <tr>
+                            <td>Mathematics 101</td>
+                            <td>Section A</td>
+                            <td>MWF 9:00 AM - 10:30 AM</td>
+                            <td>Dr. Robinson</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="small-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#joDetails" aria-controls="joDetails">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Biology 202</td>
+                            <td>Section B</td>
+                            <td>TTh 1:00 PM - 3:30 PM</td>
+                            <td>Prof. Garcia</td>
+                            <td>
+                              <div class="d-flex justify-content-center">
+                                <button class="small-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#joDetails" aria-controls="joDetails">Edit</button>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>History 110</td>
+                            <td>Section C</td>
+                            <td>MWF 2:00 PM - 3:30 PM</td>
+                            <td>Prof. Williams</td>
+                            <td>
+                              <div class="d-flex justify-content-center">
+                                <button class="small-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#joDetails" aria-controls="joDetails">Edit</button>
+                              </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+        
+        <!-- For Confirmations -->
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center pb-2">
+                    <h2 class="title-font">Recent Enrolled Students</h2>
+                    <a href=""><button class="submit-button">Confirm Enrollment</button></a>
+                </div>
+                
+                <table class="table table-hover shadow-none mt-2">
+                    <thead class="open-table-header">
+                        <tr>
+                            <th class="fw-normal">ID Number</th>
+                            <th class="fw-normal">Name</th>
+                            <th class="fw-normal">Course</th>
+                            <th class="fw-normal">Total Units</th>
+                            <th class="fw-normal">Total Subjects</th>
+                        </tr>
+                    </thead>
+                    <tbody class="open-table-body open-all-request" id="jo-table">
+                        <tr>
+                            <td>W0044</td>
+                            <td>Zen Mier</td>
+                            <td>BSCPE</td>
+                            <td>20 Units</td>
+                            <td>8 Subjects</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-sm-4 gap-3 d-flex flex-column" style="height: calc(100vh - 11vh)">
+        <div class="user-statistics-card">
+            <div class="user-statistics-header">
+              <div>
+                <span class="title-font">Registered Students</span>
+              </div>
+            </div>
+        
+            <div class="user-statistics-progress-container">
+              <svg class="user-statistics-svg" width="240" height="240">
+                <circle class="user-statistics-circle user-statistics-background" cx="120" cy="120" r="100"/>
+                <circle class="user-statistics-circle user-statistics-progress" cx="120" cy="120" r="100"/>
+              </svg>
+              <div class="user-statistics-numbers">
+                <p class="user-statistics-total">0</p>
+                <p class="user-statistics-label">Total Students</p>
+              </div>
+            </div>
+        
+            <div class="user-statistics-breakdown">
+              <div class="user-statistics-plan">
+                <div class="user-statistics-plan-indicator user-statistics-premium-indicator"></div>
+                <div class="user-statistics-plan-details">
+                  <p class="user-statistics-plan-users user-statistics-premium-count">0</p>
+                  <p class="user-statistics-plan-name">Enrolled Student</p>
+                </div>
+              </div>
+              <div class="user-statistics-plan">
+                
+                <div class="user-statistics-plan-details">
+                  <p class="user-statistics-plan-users user-statistics-basic-count">0</p>
+                  <p class="user-statistics-plan-name">Registered Student</p>
+                </div>
+                <div class="user-statistics-plan-indicator user-statistics-basic-indicator"></div>
+              </div>
+            </div>
+        </div>
+
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="pb-2">
+                    <span class="title-font">Enrollment Percentages</span>
+                </div>
+                <div class="chart-area">
+                    <canvas id="chart2nd" class="chart2nd-Container"></canvas>
+                </div>                           
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock content %}

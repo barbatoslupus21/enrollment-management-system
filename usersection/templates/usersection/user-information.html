@@ -1,0 +1,220 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">User Information</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Information Section -->
+    {% if request.user.userrole == "Student" %}
+    <div class="d-flex justify-content-center">
+        <div class="col-sm-6 gap-3 d-flex flex-column">
+        <div class="card registration-card py-5">
+            <div class="card-body">
+                {% if request.user.new_user %}
+                <div class="alert alert-success" role="alert">
+                    <p class="p-2 m-0">Attention New Students: If you are enrolling for the first time, please complete the form below. This is your first required step.</p>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{% url "submit-info" %}" enctype="multipart/form-data" class="row g-2 needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="profile-image-container">
+                        <div class="image-wrapper">
+                            <img src="{{request.user.avatar.url}}" alt="user-avatar" class="profile-image">
+                            <button type="button" class="edit-button" onclick="document.getElementById('profile-image-input').click()">
+                                <span class="edit-icon">✏️</span>
+                            </button>
+                        </div>
+                        <input type="file" id="profile-image-input" accept="image/*" name="user-avatar" style="display: none;" onchange="handleImageChange(this)">
+                        <p id="filename-display" class="filename-text"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoFirst" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="infoFirst" name="firstname" value="{{request.user.firstName}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your first name.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoLast" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="infoLast" name="lastname" value="{{request.user.lastName}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your last name.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="infoEmail" name="email" value="{{request.user.email}}" required>
+                        <div class="invalid-feedback">
+                            Please input valid email address.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoContact" class="form-label">Contact Number</label>
+                        <input type="number" class="form-control" id="infoContact" name="contact-number" value="{{request.user.contact}}" required>
+                        <div class="invalid-feedback">
+                            Please input valid contact number.
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="infoCourse" class="form-label">Course</label>
+                        <select class="form-select" id="infoCourse" name="course" required>
+                            <option selected {% if not request.user.student_info %}disabled{% endif %} value="{% if request.user.student_info %}{{request.user.student_info.course.id}}{% endif %}">{% if request.user.student_info %}{{request.user.student_info.course.course}}{% else %}Choose...{% endif %}</option>
+                            {% for course in courses %}
+                            <option value="{{course.id}}">{{course.course}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid course.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoSemester" class="form-label">Semester</label>
+                        <select class="form-select" id="infoSemester" name="semester" required>
+                            <option selected {% if not request.user.student_info %}disabled{% endif %} value="{% if request.user.student_info %}{{request.user.student_info.semester}}{% endif %}">{% if request.user.student_info %}{{request.user.student_info.semester}}{% else %}Choose...{% endif %}</option>
+                            <option value="1st Semester">1st Semester</option>
+                            <option value="2nd Semester">2nd Semester</option>
+                            <option value="3rd Semester">3rd Semester</option>
+                            <option value="4th Semester">4th Semester</option>
+                            <option value="5th Semester">5th Semester</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid semester.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoLevel" class="form-label">Year Level</label>
+                        <input type="number" class="form-control" id="infoLevel" name="year-level" value="{% if request.user.student_info %}{{request.user.student_info.year_level}}{% endif %}" required>
+                        <div class="invalid-feedback">
+                            Please specify your year level.
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end pt-4">
+                        <button type="submit" class="submit-button">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex justify-content-center">
+        <div class="col-sm-6 gap-3 d-flex flex-column">
+        <div class="card registration-card py-5">
+            <div class="card-body">
+                <div class="alert alert-success" role="alert">
+                    <p class="p-2 m-0">Attention Professors: If you are a new faculty member or are using this system for the first time, please complete the form below. This is your first required step to access the system.</p>
+                </div>
+
+                <form method="POST" action="{% url "prof-info" %}" enctype="multipart/form-data" class="row g-2 needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="profile-image-container">
+                        <div class="image-wrapper">
+                            <img src="{{request.user.avatar.url}}" alt="user-avatar" class="profile-image">
+                            <button type="button" class="edit-button" onclick="document.getElementById('profile-image-input').click()">
+                                <span class="edit-icon">✏️</span>
+                            </button>
+                        </div>
+                        <input type="file" id="profile-image-input" accept="image/*" name="prof-avatar" style="display: none;" onchange="handleImageChange(this)">
+                        <p id="filename-display" class="filename-text"></p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoFirst" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="infoFirst" name="firstname" value="{{request.user.firstName}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your department.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoLast" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="infoLast" name="lastname" value="{{request.user.lastName}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your position.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoExt" class="form-label">Name Extension</label>
+                        <input type="text" class="form-control" id="infoExt" value="{{request.user.prof_info.name_ext}}" name="name-ext">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoDepartment" class="form-label">Department</label>
+                        <input type="text" class="form-control" id="infoDepartment" name="department" value="{{request.user.prof_info.department}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your department.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoPosition" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="infoPosition" name="position" value="{{request.user.prof_info.position}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your position.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoHired" class="form-label">Hired Date</label>
+                        <input type="date" class="form-control" id="infoHired" name="hired-date" value="{{ request.user.prof_info.hire_date|date:'Y-m-d' }}" required>
+                        <div class="invalid-feedback">
+                            Please specify your hired date.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="infoEmail" name="email" value="{{request.user.email}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your email address.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="infoContact" class="form-label">Contact Number</label>
+                        <input type="number" class="form-control" id="infoContact" name="contact-number" value="{{request.user.contact}}" required>
+                        <div class="invalid-feedback">
+                            Please specify your contact number.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end pt-4">
+                        <button type="submit" class="submit-button">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function handleImageChange(input) {
+      if (input.files && input.files[0]) {
+        const fileName = input.files[0].name;
+        document.getElementById('filename-display').textContent = fileName;
+    
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.querySelector('.profile-image').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  </script>
+{% endblock content %}

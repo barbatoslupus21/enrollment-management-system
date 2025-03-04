@@ -1,0 +1,131 @@
+{% extends "main.html" %}
+{% load static %}
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Overview</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Left Column -->
+    <div class="col-sm-8 gap-3 d-flex flex-column" style="height: calc(100vh - 11vh)">
+        <div class="card banner-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <span class="banner-title">Welcome Back {{request.user.firstName}}!!</span>
+                </div>
+                <p class="pt-3 text-light">Welcome to your dashboard. Here you can manage your enrollment, view your schedule, and check your notifications.</p>
+            </div>
+        </div>
+
+        <!-- Card Counts -->
+        <div class="row gx-3">
+            <div class="col-md-4 col-sm-4">
+              <div class="card metric-card">
+                <div class="card-body">
+                  <h2 class="card-title">Total Subject Enrolled</h2>
+                  <div class="card-value">{{subjectCount}}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-4">
+              <div class="card metric-card">
+                <div class="card-body">
+                  <h2 class="card-title">Total Enrolled Unit</h2>
+                  <div class="card-value">{{totalUnits}}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-4">
+              <div class="card metric-card">
+                <div class="card-body">
+                  <h2 class="card-title">Current Subjects</h2>
+                  <div class="card-value">{{currentSubjects}}</div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="pb-2">
+                    <span class="title-font">News and Events</span>
+                </div>
+
+                <div class="event-container">
+                    {% for event in events %}
+                        <div class="event-card">
+                            <div class="event-title">{{event.message}}</div>
+                            <div class="course-details">{{event.date_created|timesince}} ago</div>
+                        </div>
+                    {% endfor %}    
+                </div>   
+            </div>
+        </div>
+        
+
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-sm-4 gap-3 d-flex flex-column" style="height: calc(100vh - 11vh)">
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body profile-card">
+                <div class="profile-image-container">
+                    <img src="{{request.user.avatar.url}}" alt="user-avatar" class="profile-image">
+                </div>
+                
+                <div class="pb-3">
+                    <h2 class="profile-name m-1">{{request.user.name}}</h2>
+                    <span class="text-secondary pb-2">{{request.user.userrole}}</span>
+                </div>
+
+                <div class="profile-details">
+                    <div class="profile-label">ID Number</div>
+                    <div class="profile-value">{{request.user.id_number}}</div>
+
+                    <div class="profile-label">Course</div>
+                    <div class="profile-value">{{request.user.student_info.course.course}}</div>
+
+                    <div class="profile-label">Current Semester</div>
+                    <div class="profile-value">{{request.user.student_info.semester}}</div>
+                    
+                    <div class="profile-label">Email Address</div>
+                    <div class="profile-value">
+                        <a href="mailto:sundari@school.com" class="email">{{request.user.email}}</a>
+                    </div>
+                    
+                    <div class="profile-label">Subject Enrolled</div>
+                    <div class="profile-value">{{totalUnits}}</div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="pb-2">
+                    <span class="title-font">Today's Schedule</span>
+                </div>
+                <div class="schedule-container">
+                    {% for section in sections %}
+                    <div class="schedule-card">
+                        <div class="schedule-card-border" style="background-color: #5c88c4;"></div>
+                        <div class="schedule-content">
+                            <div class="course-title">{{section.section.subject.course_code}}: {{section.section.subject.course_title}}</div>
+                            <div class="course-details">{{section.section.day|slice:":3"}} {{section.section.time_from|date:"h:i A"}} - {{section.section.time_to|date:"h:i A"}}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock content %}
+
+
+

@@ -1,0 +1,161 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Subject Approval</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Left Column -->
+    <div id="leftColumn" class="col-12 gap-3 d-flex flex-column transition-all" style="height: calc(100vh - 11vh);">
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="title-font pb-3">List of Subjects Tagged for Confirmation</h2>
+                    <div class="search-wrapper">
+                        <button class="icon-button" onclick="toggleSearch()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#736b68" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                        </button>
+                        <div class="search-input" id="searchContainer">
+                            <input type="text" id="searchInput" placeholder="Search..." oninput="searchJO()">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- List of accounts -->
+                {% if students %}
+                <table class="table table-hover shadow-none mt-2">
+                    <thead class="open-table-header">
+                        <tr>
+                            <th class="fw-normal">Date Tagged</th>
+                            <th class="fw-normal">ID Number</th>
+                            <th class="fw-normal">Name</th>
+                            <th class="fw-normal">Email</th>
+                            <th class="fw-normal">Year Level</th>
+                            <th class="fw-normal">Course</th>
+                            <th class="fw-normal">Semester</th>
+                            <th class="fw-normal text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="account-table-body open-all-request" id="prof-table">
+                        {% for student in students %}
+                        <tr>
+                            <td>{{student.user_section.last.date_tagged|date:"d M Y"}}</td>
+                            <td>{{student.id_number}}</td>
+                            <td>{{student.name}}</td>
+                            <td>{{student.email}}</td>
+                            <td>{{student.student_info.year_level}}</td>
+                            <td>{{student.student_info.course.course}}</td>
+                            <td>{{student.student_info.semester}}</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="small-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#tagged{{student.id}}" aria-controls="tagged{{student.id}}">View</button>
+                                </div>
+
+                                <!-- View Section Offcanvas -->
+                                <div class="offcanvas offcanvas-end" tabindex="-1" id="tagged{{student.id}}" aria-labelledby="tagged{{student.id}}Label" style="width: 900px;">
+                                    <div class="offcanvas-header">
+                                        <h5 class="offcanvas-title" id="class{{section.id}}Label">Tagged Subject</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                    </div>
+                                    <div class="offcanvas-body">
+                                        {% if section %}
+                                            <table class="table table-hover shadow-none mt-4">
+                                                <thead class="open-table-header">
+                                                    <tr>
+                                                        <th class="fw-normal" style="width:35%;">Subjects</th>
+                                                        <th class="fw-normal text-center">Section</th>
+                                                        <th class="fw-normal">Schedule</th>
+                                                        <th class="fw-normal text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="student-table-body open-all-request" id="jo-table">                               
+                                                        {% for tag in section %}
+                                                            <tr>
+                                                                <td style="width:35%;">{{tag.section.subject.course_code}}: {{tag.section.subject.course_title}}</td>
+                                                                <td class="text-center">{{tag.section.section}}</td>
+                                                                <td>{{tag.section.day|slice:":3"}} {{tag.section.time_from|date:"h:i A"}} - {{tag.section.time_to|date:"h:i A"}}</td>
+                                                                <td class="text-center">
+                                                                    <div class="d-flex justify-content-center gap-1">
+                                                                        <form method="POST" action="{% url "remove-tag" pk=tag.id %}">
+                                                                            {% csrf_token %}
+                                                                            <button class="icon-button p-2">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#D84040" class="m-0 p-0">
+                                                                                    <path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/>
+                                                                                </svg>
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% else %}
+                                            <div class="h-100 d-flex justify-content-center align-items-center">
+                                                <p class="title-font">This section has no enrolled students.</p>
+                                            </div>
+                                        {% endif %}      
+                                    </div>
+                                    <div class="offcanvas-footer">
+                                        <div class="d-flex justify-content-end p-3">
+                                            <form method="POST" action="{% url "confirm-tagging" pk=student.id %}">
+                                                {% csrf_token %}
+                                                <button class="submit-button">Confirm Tagged Subjects</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="h-100 d-flex justify-content-center align-items-center">
+                    <p class="notif-context">No registered professor at this time.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    //Toggle Search
+    function toggleSearch() {
+        document.getElementById('searchContainer').classList.toggle('active');
+    }
+  
+    let searchTimeout;
+  
+    function searchJO() {
+        clearTimeout(searchTimeout);
+  
+        searchTimeout = setTimeout(() => {
+            handleJoSearch();
+        }, 1000);
+    }
+  
+    function handleJoSearch() {
+          let input = document.getElementById("searchInput").value.toLowerCase();
+          let rows = document.querySelectorAll("#prof-table tr");
+  
+          rows.forEach(row => {
+              let text = row.innerText.toLowerCase();
+              if (text.includes(input)) {
+                  row.style.display = "";
+              } else {
+                  row.style.display = "none";
+              }
+          });
+    }
+        
+</script>
+
+{% endblock content %}

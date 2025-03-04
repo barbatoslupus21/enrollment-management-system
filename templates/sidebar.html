@@ -1,0 +1,160 @@
+<nav class="sidebar-nav">
+    {% if request.user.userrole == "Administrator" %}
+    <a href="{% url "admin-overview" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed">
+                <path d="M160-186.67v-380q0-15.83 7.08-30 7.09-14.16 19.59-23.33L440-810q17.45-13.33 39.89-13.33T520-810l253.33 190q12.5 9.17 19.59 23.33 7.08 14.17 7.08 30v380q0 27.5-19.58 47.09Q760.83-120 733.33-120h-140q-14.16 0-23.75-9.58-9.58-9.59-9.58-23.75v-213.34q0-14.16-9.58-23.75-9.59-9.58-23.75-9.58h-93.34q-14.16 0-23.75 9.58-9.58 9.59-9.58 23.75v213.34q0 14.16-9.58 23.75-9.59 9.58-23.75 9.58h-140q-27.5 0-47.09-19.58Q160-159.17 160-186.67Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Overview</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Professor" %}
+    <a href="{% if not request.user.prof_info %}{% url "information" %}{% else %}{% url "professor-overview" %}{% endif %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed">
+                <path d="M160-186.67v-380q0-15.83 7.08-30 7.09-14.16 19.59-23.33L440-810q17.45-13.33 39.89-13.33T520-810l253.33 190q12.5 9.17 19.59 23.33 7.08 14.17 7.08 30v380q0 27.5-19.58 47.09Q760.83-120 733.33-120h-140q-14.16 0-23.75-9.58-9.58-9.59-9.58-23.75v-213.34q0-14.16-9.58-23.75-9.59-9.58-23.75-9.58h-93.34q-14.16 0-23.75 9.58-9.58 9.59-9.58 23.75v213.34q0 14.16-9.58 23.75-9.59 9.58-23.75 9.58h-140q-27.5 0-47.09-19.58Q160-159.17 160-186.67Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Overview</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Student" %}
+    <a href="{% if not request.user.student_info %}{% url "information" %}{% else %}{% url "student-overview" %}{% endif %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed">
+                <path d="M160-186.67v-380q0-15.83 7.08-30 7.09-14.16 19.59-23.33L440-810q17.45-13.33 39.89-13.33T520-810l253.33 190q12.5 9.17 19.59 23.33 7.08 14.17 7.08 30v380q0 27.5-19.58 47.09Q760.83-120 733.33-120h-140q-14.16 0-23.75-9.58-9.58-9.59-9.58-23.75v-213.34q0-14.16-9.58-23.75-9.59-9.58-23.75-9.58h-93.34q-14.16 0-23.75 9.58-9.58 9.59-9.58 23.75v213.34q0 14.16-9.58 23.75-9.59 9.58-23.75 9.58h-140q-27.5 0-47.09-19.58Q160-159.17 160-186.67Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Overview</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Student" %}
+    <a href="{% url "student-enrollment" %}" class="nav-item {% if not request.user.student_info %}disabled-link{% endif %}">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="M480-480.67q-66 0-109.67-43.66Q326.67-568 326.67-634t43.66-109.67Q414-787.33 480-787.33t109.67 43.66Q633.33-700 633.33-634t-43.66 109.67Q546-480.67 480-480.67Zm-320 254V-260q0-36.67 18.5-64.17T226.67-366q65.33-30.33 127.66-45.5 62.34-15.17 125.67-15.17t125.33 15.5q62 15.5 127.34 45.17 30.33 14.33 48.83 41.83T800-260v33.33q0 27.67-19.5 47.17T733.33-160H226.67q-27.67 0-47.17-19.5T160-226.67Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Enrollment</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Administrator" %}
+    <a href="{% url "enrollment" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="M480-480.67q-66 0-109.67-43.66Q326.67-568 326.67-634t43.66-109.67Q414-787.33 480-787.33t109.67 43.66Q633.33-700 633.33-634t-43.66 109.67Q546-480.67 480-480.67Zm-320 254V-260q0-36.67 18.5-64.17T226.67-366q65.33-30.33 127.66-45.5 62.34-15.17 125.67-15.17t125.33 15.5q62 15.5 127.34 45.17 30.33 14.33 48.83 41.83T800-260v33.33q0 27.67-19.5 47.17T733.33-160H226.67q-27.67 0-47.17-19.5T160-226.67Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Enrollment</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Administrator" %}
+    <a href="{% url "tagged" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="M400-400h160v-80H400v80Zm0-120h320v-80H400v80Zm0-120h320v-80H400v80Zm-80 400q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Subjects Approval</span>
+        </div>
+    </a>
+    {% endif %}
+    
+    {% if request.user.userrole == "Administrator"%}
+    <a href="{% url "schedule" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="m787-145 28-28-75-75v-112h-40v128l87 87ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40ZM280-600h400v-80H280v80Zm187 480H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v268q-29-14-58.5-21t-61.5-7q-11 0-20.5.5T680-517v-3H280v80h245q-18 17-32.5 37T467-360H280v80h163q-2 10-2.5 19.5T440-240q0 33 6 61.5t21 58.5Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Schedules</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Professor" %}
+    <a href="{% url "prof-schedule" %}" class="nav-item {% if not request.user.prof_info %}disabled-link{% endif %}">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="m787-145 28-28-75-75v-112h-40v128l87 87ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40ZM280-600h400v-80H280v80Zm187 480H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v268q-29-14-58.5-21t-61.5-7q-11 0-20.5.5T680-517v-3H280v80h245q-18 17-32.5 37T467-360H280v80h163q-2 10-2.5 19.5T440-240q0 33 6 61.5t21 58.5Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Schedules</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Student" %}
+    <a href="{% url "student-schedule" %}" class="nav-item {% if not request.user.student_info or not request.student.user_section %}disabled-link{% endif %}">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="m787-145 28-28-75-75v-112h-40v128l87 87ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40ZM280-600h400v-80H280v80Zm187 480H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v268q-29-14-58.5-21t-61.5-7q-11 0-20.5.5T680-517v-3H280v80h245q-18 17-32.5 37T467-360H280v80h163q-2 10-2.5 19.5T440-240q0 33 6 61.5t21 58.5Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Schedules</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Administrator" %}
+    <a href="{% url "professor" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="M480-411q-10 0-19.5-2.5T442-421L104-605q-11-6-15.5-15T84-640q0-11 4.5-20t15.5-15l338-184q9-5 18.5-7.5T480-869q10 0 19.5 2.5T518-859l338 184q11 6 15.5 15t4.5 20q0 11-4.5 20T856-605L518-421q-9 5-18.5 7.5T480-411Zm0 80 314-171q2-1 19-5 17 0 28.5 11.5T853-467q0 11-5 20t-16 15L518-261q-9 5-18.5 7.5T480-251q-10 0-19.5-2.5T442-261L128-432q-11-6-16-15t-5-20q0-17 11.5-28.5T147-507q5 0 9.5 1.5t9.5 3.5l314 171Zm0 160 314-171q2-1 19-5 17 0 28.5 11.5T853-307q0 11-5 20t-16 15L518-101q-9 5-18.5 7.5T480-91q-10 0-19.5-2.5T442-101L128-272q-11-6-16-15t-5-20q0-17 11.5-28.5T147-347q5 0 9.5 1.5t9.5 3.5l314 171Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Professors</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Administrator" %}
+    <a href="{% url "account" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="M40-272q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v32q0 33-23.5 56.5T600-160H120q-33 0-56.5-23.5T40-240v-32Zm698 112q11-18 16.5-38.5T760-240v-40q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v40q0 33-23.5 56.5T840-160H738ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Accounts</span>
+        </div>
+    </a>
+    {% endif %}
+
+    {% if request.user.userrole == "Administrator" %}
+    <a href="{% url "system-settings" %}" class="nav-item">
+        <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed" class="m-0 p-0">
+                <path d="M425-80q-18.33 0-32.17-12-13.83-12-16.5-30l-13-84.67q-17-6.33-34.83-16.66-17.83-10.34-32.17-21.67l-78 35.33Q200.67-202 183-208q-17.67-6-27.67-22.33L101-327q-10-16.33-5.67-34.33 4.34-18 19.34-29.67l71-52.67q-1.67-8.33-2-18.16-.34-9.84-.34-18.17 0-8.33.34-18.17.33-9.83 2-18.16l-71-52.67q-15-11.67-19.34-29.67Q91-616.67 101-633l54.33-96.67Q165.33-746 183-752t35.33 1.67l78 35.33q14.34-11.33 32.34-21.67 18-10.33 34.66-16l13-85.33q2.67-18 16.5-30 13.84-12 32.17-12h110q18.33 0 32.17 12 13.83 12 16.5 30l13 84.67q17 6.33 35.16 16.33 18.17 10 31.84 22l78-35.33q17.66-7.67 35-1.67Q794-746 804-729.67L859-633q10 16.33 5.67 34.67Q860.33-580 845.33-569l-71 51.33q1.67 9 2 18.84.34 9.83.34 18.83 0 9-.34 18.5Q776-452 774-443l71 52q15 11 19.33 29.33 4.34 18.34-5.66 34.67L804-230.33Q794-214 776.33-208q-17.66 6-35.33-1.67L663.67-245q-14.34 11.33-32 22-17.67 10.67-35 16.33l-13 84.67q-2.67 18-16.5 30Q553.33-80 535-80H425Zm55.67-266.67q55.33 0 94.33-39T614-480q0-55.33-39-94.33t-94.33-39q-55.67 0-94.5 39-38.84 39-38.84 94.33t38.84 94.33q38.83 39 94.5 39Z"/>
+            </svg>
+            <span class="nav-text m-0 p-0">Settings</span>
+        </div>
+    </a>
+    {% endif %}
+
+</nav>
+
+<div class="account-section">
+    <div class="account-info" onclick="toggleDropdown()">
+        <div class="avatar">
+            <img src="{{request.user.avatar.url}}" alt="User Avatar">
+        </div>
+        <div class="nav-text m-0 p-0">
+            <div class="user-info">
+                <span class="user-name">{% if request.user.userrole == "Professor" %}{% if request.user.prof_info.name_ext %}{{request.user.prof_info.name_ext}} {% endif %}{% endif %}{{request.user.name}}</span>
+                <span class="user-role">{{request.user.userrole}}</span>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+    <div class="dropdown-menu" id="dropdownMenu">
+        {% if not request.user.userrole == "Administrator" %}
+        <a href="{% url "information" %}" class="dropdown-item">
+            <i class="fas fa-key"></i> Profile
+        </a>
+        {% endif %}
+        
+        <a href="{% url "logout" %}" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>

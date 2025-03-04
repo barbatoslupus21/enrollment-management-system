@@ -1,0 +1,143 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Account</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Left Column -->
+    <div id="leftColumn" class="col-12 gap-3 d-flex flex-column transition-all" style="height: calc(100vh - 11vh);">
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="title-font pb-3">List of Enrolled Account for Approval</h2>
+                    <div class="search-wrapper">
+                        <button class="icon-button" onclick="toggleSearch()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#736b68" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                        </button>
+                        <div class="search-input" id="searchContainer">
+                            <input type="text" id="searchInput" placeholder="Search..." oninput="searchJO()">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- List of accounts -->
+                {% if accounts %}
+                <table class="table table-hover shadow-none mt-2">
+                    <thead class="open-table-header">
+                        <tr>
+                            <th class="fw-normal">Date Registered</th>
+                            <th class="fw-normal">ID Number</th>
+                            <th class="fw-normal">Name</th>
+                            <th class="fw-normal">Contact</th>
+                            <th class="fw-normal">Email</th>
+                            <th class="fw-normal text-center">Status</th>
+                            <th class="fw-normal text-center">Active?</th>
+                            <th class="fw-normal text-center">Role</th>
+                            <th class="fw-normal text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="account-table-body open-all-request" id="account-table">
+                        {% for account in accounts %}
+                        <tr>
+                            <td>{{account.date_created|date:"d M Y"}}</td>
+                            <td>{{account.id_number}}</td>
+                            <td>{{account.name}}</td>
+                            <td>{{account.contact}}</td>
+                            <td>{{account.email}}</td>
+                            <td>
+                                {% if account.is_approved %}
+                                <div class="d-flex justify-content-center">
+                                    <div class="status-design-2 approved2">Approved</div>
+                                </div>
+                                {% else %}
+                                <div class="d-flex justify-content-center">
+                                    <div class="status-design-2 processing2">For Approval</div>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            {% if account.is_active %}
+                            <td style="color:green" class="text-center">Yes</td>
+                            {% else %}
+                            <td style="color:red" class="text-center">No</td>
+                            {% endif %}
+
+                            <td class="text-center">
+                                {% if account.userrole == "Professor" %}
+                                Professor
+                                {% else %}
+                                Student
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-1">
+                                    {% if not account.is_approved %}
+                                        <form method="POST" action="{% url 'confirm-account' pk=account.id %}">
+                                            {% csrf_token %}
+                                            <button class="normal-button">Confirm</button>
+                                        </form>
+                                    {% endif %}
+    
+                                    {% if account.is_active and account.is_approved %}
+                                        <form method="POST" action="{% url 'deactivate-account' pk=account.id %}">
+                                            {% csrf_token %}
+                                            <button class="cancel-button">Deactivate</button>
+                                        </form>
+                                    {% endif %}
+    
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="h-100 d-flex justify-content-center align-items-center">
+                    <p class="notif-context">No registered account at this time.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    //Toggle Search
+    function toggleSearch() {
+        document.getElementById('searchContainer').classList.toggle('active');
+    }
+  
+    let searchTimeout;
+  
+    function searchJO() {
+        clearTimeout(searchTimeout);
+  
+        searchTimeout = setTimeout(() => {
+            handleJoSearch();
+        }, 1000);
+    }
+  
+    function handleJoSearch() {
+          let input = document.getElementById("searchInput").value.toLowerCase();
+          let rows = document.querySelectorAll("#account-table tr");
+  
+          rows.forEach(row => {
+              let text = row.innerText.toLowerCase();
+              if (text.includes(input)) {
+                  row.style.display = "";
+              } else {
+                  row.style.display = "none";
+              }
+          });
+    }
+        
+</script>
+
+{% endblock content %}

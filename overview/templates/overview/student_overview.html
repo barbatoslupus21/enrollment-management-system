@@ -1,0 +1,147 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Overview</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Left Column -->
+    <div class="col-sm-8 gap-3 d-flex flex-column" style="height: calc(100vh - 11vh)">
+        <div class="card banner-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <span class="banner-title">Welcome Back Juan!!</span>
+                </div>
+                <p class="pt-3 text-light">Welcome to your dashboard. Here you can manage your enrollment, view your schedule, and check your notifications.</p>
+            </div>
+        </div>
+
+        <!-- Card Counts -->
+        <div class="row gx-3">
+            <div class="col-md-4 col-sm-4">
+              <div class="card metric-card">
+                <div class="card-body">
+                  <h2 class="card-title">Total Subject Enrolled</h2>
+                  <div class="card-value">0040</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-4">
+              <div class="card metric-card">
+                <div class="card-body">
+                  <h2 class="card-title">Total Enrolled Unit</h2>
+                  <div class="card-value">0036</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-4">
+              <div class="card metric-card">
+                <div class="card-body">
+                  <h2 class="card-title">Current Subjects</h2>
+                  <div class="card-value">0004</div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="pb-2">
+                    <span class="title-font">News and Events</span>
+                </div>
+
+                <div class="event-container">
+                    <div class="event-card">
+                        <div class="event-title">New section available: ENG102 - English Composition II</div>
+                        <div class="course-details">Today, 9:15</div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-title">Reminder: MATH201 assignment due Friday</div>
+                        <div class="course-details">Yesterday, 3:20 PM</div>
+                    </div>
+                    
+                </div>   
+            </div>
+        </div>
+        
+
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-sm-4 gap-3 d-flex flex-column" style="height: calc(100vh - 11vh)">
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body profile-card">
+                <div class="profile-image-container">
+                    <img src="../enrollment/static/images/REIPL.jpg" alt="user-avatar" class="profile-image">
+                </div>
+                
+                <div class="pb-3">
+                    <h2 class="profile-name m-1">Zen Ballesteros Mier</h2>
+                    <span class="text-secondary pb-2">Student</span>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-center pb-2">
+                    <button class="submit-button">Enroll Now</button>
+                    <button class="normal-button">View Schedule</button>
+                </div>
+
+                <div class="profile-details">
+                    <div class="profile-label">ID Number</div>
+                    <div class="profile-value">W-0044</div>
+
+                    <div class="profile-label">Course</div>
+                    <div class="profile-value">Bachelor of Science in Computer Engineering</div>
+
+                    <div class="profile-label">Current Semester</div>
+                    <div class="profile-value">Art and Culture</div>
+                    
+                    <div class="profile-label">Email Address</div>
+                    <div class="profile-value">
+                        <a href="mailto:sundari@school.com" class="email">sundari@school.com</a>
+                    </div>
+                    
+                    <div class="profile-label">Subject Enrolled</div>
+                    <div class="profile-value">3</div>
+                    
+                    <div class="profile-label">Total Credit Hours</div>
+                    <div class="profile-value">9</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="pb-2">
+                    <span class="title-font">Today's Schedule</span>
+                </div>
+                <div class="schedule-container">
+                    <div class="schedule-card">
+                        <div class="schedule-card-border" style="background-color: #5c88c4;"></div>
+                        <div class="schedule-content">
+                            <div class="course-title">CS101: Introduction to Programming</div>
+                            <div class="course-details">9:00 AM - 10:30 AM • Room CS-112 • Prof. Smith</div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-card">
+                        <div class="schedule-card-border" style="background-color: #DDA853;"></div>
+                        <div class="schedule-content">
+                            <div class="course-title">MATH201: Calculus 1</div>
+                            <div class="course-details">2:00 PM - 03:30 PM • Room MA-405 • Prof. Dela Cruz</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock content %}

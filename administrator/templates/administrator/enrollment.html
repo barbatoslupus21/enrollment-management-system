@@ -1,0 +1,109 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="banner-content">
+    <h4 class="breadcrumbs">Registration Approval</h4>
+</div>
+
+<div class="page-content row g-3">
+    <!-- Left Column -->
+    <div id="leftColumn" class="col-12 gap-3 d-flex flex-column transition-all" style="height: calc(100vh - 11vh);">
+        <div class="card metric-card flex-grow-1">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="title-font pb-3">List of Student Registered for Enrollment</h2>
+                    <div class="search-wrapper">
+                        <button class="icon-button" onclick="toggleSearch()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#736b68" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                        </button>
+                        <div class="search-input" id="searchContainer">
+                            <input type="text" id="searchInput" placeholder="Search..." oninput="searchJO()">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- List of accounts -->
+                {% if pendings %}
+                <table class="table table-hover shadow-none mt-2">
+                    <thead class="open-table-header">
+                        <tr>
+                            <th class="fw-normal">Date Registered</th>
+                            <th class="fw-normal">ID Number</th>
+                            <th class="fw-normal">Name</th>
+                            <th class="fw-normal">Course</th>
+                            <th class="fw-normal">Year Level</th>
+                            <th class="fw-normal">Semester</th>
+                            <th class="fw-normal text-center">Confirm Registration?</th>
+                        </tr>
+                    </thead>
+                    <tbody class="account-table-body open-all-request" id="confirmation-table">
+                        {% for pending in pendings %}
+                        <tr>
+                            <td>{{pending.date_registered|date:"d M Y"}}</td>
+                            <td>{{pending.student.id_number}}</td>
+                            <td>{{pending.student.name}}</td>
+                            <td>{{pending.student.student_info.course.course}}</td>
+                            <td>{{pending.student.student_info.year_level}}</td>
+                            <td>{{pending.student.student_info.semester}}</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <form method="POST" action="{% url "approval" pk=pending.id %}">
+                                        {% csrf_token %}
+                                        <button class="submit-button" name="action" value="approve">Approve</button>
+                                        <button class="cancel-button" name="action" value="disapprove">Disapprove</button>
+                                    </form>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="h-100 d-flex justify-content-center align-items-center">
+                    <p class="notif-context">Currently, no students are submitting enrollment registrations.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    //Toggle Search
+    function toggleSearch() {
+        document.getElementById('searchContainer').classList.toggle('active');
+    }
+  
+    let searchTimeout;
+  
+    function searchJO() {
+        clearTimeout(searchTimeout);
+  
+        searchTimeout = setTimeout(() => {
+            handleJoSearch();
+        }, 1000);
+    }
+  
+    function handleJoSearch() {
+          let input = document.getElementById("searchInput").value.toLowerCase();
+          let rows = document.querySelectorAll("#confirmation-table tr");
+  
+          rows.forEach(row => {
+              let text = row.innerText.toLowerCase();
+              if (text.includes(input)) {
+                  row.style.display = "";
+              } else {
+                  row.style.display = "none";
+              }
+          });
+    }
+        
+</script>
+
+{% endblock content %}
