@@ -46,18 +46,15 @@
                                 </div>
                                 <div class="subject-card-body">
                                     <ul class="section-list">
-                                        {% for item in enrolled_subjects %}
+                                        {% for section in subject.is_enrolled %}
                                             <li>
                                                 <div class="section-info">
-                                                    {% if item.is_enrolled %}
-                                                        <strong>{{ item.is_enrolled.section.section }}</strong>
-                                                        <p>Time: {{ item.is_enrolled.section.day|slice:":3" }} 
-                                                           {{ item.is_enrolled.section.time_from|date:"h:i A" }} - 
-                                                           {{ item.is_enrolled.section.time_to|date:"h:i A" }}</p>
-                                                        <p>Room: {{ item.is_enrolled.section.room }}</p>
-                                                    {% else %}
-                                                        <strong>Not Enrolled</strong>
-                                                    {% endif %}
+                                                    <strong>{{ section.section.section }}</strong>
+                                                    <p>Time: {{ section.section.day|slice:":3" }} 
+                                                    {{ section.section.time_from|date:"h:i A" }} - 
+                                                    {{ section.section.time_to|date:"h:i A" }}</p>
+                                                    <p>Room: {{ section.section.room }}</p>
+                                                    <p>Professor: {% if section.section.professor.prof_info.name_ext %}{{section.section.professor.prof_info.name_ext}} {% endif %} {{ section.section.professor.name }}</p>
                                                 </div>
                                             </li>
                                         {% endfor %}

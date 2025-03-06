@@ -121,14 +121,13 @@ def student_schedule(request):
     courses = Course.objects.all()
     subjects = SubjectList.objects.filter(status=True, course=request.user.student_info.course).order_by('semester')
 
-    for enrolled in subjects:
-        enrolled.is_enrolled= SectionStudents.objects.filter(section__subject=enrolled, student=request.user).first()
+    for subject in subjects:
+        subject.is_enrolled = SectionStudents.objects.filter(section__subject=subject, student=request.user).all()
 
     context={
         'confirmation':confirmation,
         'courses':courses,
-        'subjects':subjects,
-        'enrolled':enrolled
+        'subjects':subjects
     }
     return render(request, 'usersection/student-schedule.html', context)
 
