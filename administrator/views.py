@@ -416,12 +416,10 @@ def tagged_confirmation(request):
     section = None
 
     for student in students:
-        student.tagged_subjects = SectionStudents.objects.filter(student=student)
-        section = student.tagged_subjects
+        student.tagged_subjects = SectionStudents.objects.filter(student=student).all()
 
     context = {
         'students': students,
-        'section': section
     }
     return render(request, 'administrator/registration-confirmation.html', context)
 

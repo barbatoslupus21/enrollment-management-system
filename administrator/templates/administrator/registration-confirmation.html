@@ -63,7 +63,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                     </div>
                                     <div class="offcanvas-body">
-                                        {% if section %}
+                                        {% if student.tagged_subjects %}
                                             <table class="table table-hover shadow-none mt-4">
                                                 <thead class="open-table-header">
                                                     <tr>
@@ -74,7 +74,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="student-table-body open-all-request" id="jo-table">                               
-                                                        {% for tag in section %}
+                                                        {% for tag in student.tagged_subjects %}
                                                             <tr>
                                                                 <td style="width:35%;">{{tag.section.subject.course_code}}: {{tag.section.subject.course_title}}</td>
                                                                 <td class="text-center">{{tag.section.section}}</td>
