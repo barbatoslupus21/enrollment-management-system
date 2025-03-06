@@ -62,7 +62,7 @@ class SectionStudents(models.Model):
     date_tagged = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.section} : {self.student}'
+        return f'{self.section} : {self.student.name}'
     
 class ProfessorSchedule(models.Model):
     professor = models.ForeignKey(System_users, on_delete=models.SET_NULL, null=True, related_name="prof_schedule")

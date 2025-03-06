@@ -6,7 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+
+ALLOWED_HOSTS = ['zenmier30.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 # Application Configuration
 INSTALLED_APPS = [

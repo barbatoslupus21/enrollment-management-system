@@ -18,22 +18,22 @@ def student_enrollment(request):
     courses = Course.objects.all()
     if hasattr(request.user, 'student_info') and request.user.student_info and request.user.student_info.course:
         subjects = SubjectList.objects.filter(status=True, course=request.user.student_info.course).order_by('semester')
-        
-        enrolled = None
-        
-        for subject in subjects:
-            subject.is_enrolled = SectionStudents.objects.filter(section__subject=subject, student=request.user).exists()
-            enrolled = subject
+        user_subjects = SectionStudents.objects.filter(student=request.user).values_list('section__subject_id', flat=True).distinct()
+        user_sections = SectionStudents.objects.filter(student=request.user).values_list('section_id', flat=True)
     else:
         subjects = SubjectList.objects.none()
-        enrolled = None
+        user_sections = []
+        user_subjects = []
 
+    tagged_subject = SectionStudents.objects.filter(student=request.user).count()
     context={
         'confirmation':confirmation,
         'courses':courses,
         'subjects':subjects,
-        'enrolled': enrolled,
-        'progress':progress
+        'progress':progress,
+        'user_subjects':user_subjects,
+        'user_sections': user_sections,
+        'tagged_subject':tagged_subject
     }
     return render(request, 'usersection/student-enrollment.html', context)
 
