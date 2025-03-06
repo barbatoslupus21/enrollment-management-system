@@ -413,8 +413,6 @@ def tagged_confirmation(request):
     unique_student_ids = SectionStudents.objects.values_list('student', flat=True).distinct()
     students = System_users.objects.filter(id__in=unique_student_ids).order_by('-date_joined').exclude(student_info__enrolled=True)
 
-    section = None
-
     for student in students:
         student.tagged_subjects = SectionStudents.objects.filter(student=student).all()
 
