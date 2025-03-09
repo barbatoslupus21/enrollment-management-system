@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from homepage.models import System_users, UserInformation
 from notification.models import Notification
@@ -470,20 +470,103 @@ def confirm_subjects(request, pk):
     selected_tag = EnrollmentConfirmation.objects.filter(student=pk, status="Approve").last()
     selected_progress = EnrollmentProgress.objects.filter(student=pk).last()
     selected_student = UserInformation.objects.get(user=pk)
+    
     if request.method == "POST":
-        selected_tag.schedule_confirmation=True
-        selected_tag.date_updated=timezone.now()
-        selected_progress.section_confirmation=True
-        selected_student.enrolled=True
-        selected_student.last_updated=timezone.now()
+        selected_tag.schedule_confirmation = True
+        selected_tag.date_updated = timezone.now()
+        selected_progress.section_confirmation = True
+        selected_student.enrolled = True
+        selected_student.last_updated = timezone.now()
         selected_tag.save()
         selected_progress.save()
         selected_student.save()
 
+        # Get all sections the student is enrolled in
+        sections = SectionStudents.objects.filter(student=pk).all()
+        
+        # Create HTML table for email
+        table_html = """
+        <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+        </style>
+        
+        <table>
+            <tr>
+                <th>Subject</th>
+                <th>Section</th>
+                <th>Schedule</th>
+                <th>Professor</th>
+            </tr>
+        """
+        
+        # Add rows for each enrolled section
+        for section in sections:
+            table_html += f"""
+            <tr>
+                <td>{section.section.subject.course_code}: {section.section.subject.course_title}</td>
+                <td>{section.section.section}</td>
+                <td>{section.section.day[:3]} {section.section.time_from.strftime('%I:%M %p')} - {section.section.time_to.strftime('%I:%M %p')}</td>
+                <td>{section.section.professor.name if section.section.professor else 'TBA'}</td>
+            </tr>
+            """
+        
+        table_html += "</table>"
+        
+        # Create plain text table for email clients that don't support HTML
+        text_table = "ENROLLED SUBJECTS:\n\n"
+        text_table += "Subject | Section | Schedule | Professor\n"
+        text_table += "-" * 75 + "\n"
+        
+        for section in sections:
+            text_table += f"{section.section.subject.course_code}: {section.section.subject.course_title} | "
+            text_table += f"{section.section.section} | "
+            text_table += f"{section.section.day[:3]} {section.section.time_from.strftime('%I:%M %p')} - {section.section.time_to.strftime('%I:%M %p')} | "
+            text_table += f"{section.section.professor.name if section.section.professor else 'TBA'}\n"
+        
+        # Create email subject and message
         subject = "Subject Confirmed"
-        message = f"""Dear {selected_student.user.firstName},
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [selected_tag.student.email]
+        
+        # HTML Email
+        html_message = f"""
+        <p>Dear {selected_student.user.name},</p>
+        
+        <p>We're thrilled to inform you that your subject tagging has been successfully confirmed and approved!</p>
+        
+        <p>Here is a summary of your enrolled subjects:</p>
+        
+        {table_html}
+        
+        <p>We're excited to have you with us! If you have any questions, please don't hesitate to contact the enrollment office.</p>
+        
+        <p>Congratulations and welcome aboard!</p>
+        
+        <p>Sincerely,<br>
+        The Enrollment Team<br>
+        Trimex Colleges</p>
+        """
+        
+        # Plain text email
+        text_message = f"""Dear {selected_student.user.name},
 
-We're thrilled to inform you that your subject tagging has been successfully confirmed and approved!.
+We're thrilled to inform you that your subject tagging has been successfully confirmed and approved!
+
+Here is a summary of your enrolled subjects:
+
+{text_table}
 
 We're excited to have you with us! If you have any questions, please don't hesitate to contact the enrollment office.
 
@@ -494,8 +577,16 @@ Sincerely,
 The Enrollment Team
 Trimex Colleges
 """
-        recipient_list = [selected_tag.student.email]
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+        
+        # Send email with both HTML and plain text versions
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_message,
+            from_email=from_email,
+            to=recipient_list
+        )
+        email.attach_alternative(html_message, "text/html")
+        email.send()
         
         messages.success(request, f'{selected_tag.student.name} successfully enrolled.')
         return redirect('enrollment')
