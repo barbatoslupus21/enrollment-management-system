@@ -297,36 +297,50 @@ def export_schedule(request):
     ws['A1'].font = Font(bold=True)
     ws['A2'] = "Unofficial Copy of Enrollment Schedule"
     ws['A2'].font = Font(bold=True)
+    ws['A3'] = "ID Number:"
+    ws['A3'].font = Font(bold=True)
+    ws['B3'] = request.user.id_number
+    ws['A4'] = "Name:"
+    ws['A4'].font = Font(bold=True)
+    ws['B4'] = request.user.name
+    ws['A5'] = "Year Level:"
+    ws['A5'].font = Font(bold=True)
+    ws['B5'] = request.user.student_info.year_level
+    ws['A6'] = "Course:"
+    ws['A6'].font = Font(bold=True)
+    ws['B6'] = request.user.student_info.course.course
 
-    headers = [
-        "Subject", "Section", "Schedule", "Room", "Professor"
-    ]
+    headers = ["Subject", "Section", "Schedule", "Room", "Professor"]
     for col_num, header in enumerate(headers, start=1):
-        cell = ws.cell(row=3, column=col_num, value=header)
+        cell = ws.cell(row=8, column=col_num, value=header)
         cell.font = Font(bold=True)
 
-    for i, sched in enumerate(schedule, start=4):
+    for index, sched in enumerate(schedule, start=9):
         code = sched.section.subject.course_code
         title = sched.section.subject.course_title
+        section = sched.section.section
 
-        ws[f'A{i}'] = f"{code}: {title}"
-        ws[f'B{i}'] = sched.section.section
+        day = sched.section.day[:3] if sched.section.day else "N/A"
+        start = sched.section.time_from.strftime("%I:%M %p") if sched.section.time_from else "N/A"
+        end = sched.section.time_to.strftime("%I:%M %p") if sched.section.time_to else "N/A"
 
-        day = sched.section.day[:3]  
-        start = sched.section.time_from.strftime("%I:%M %p") 
-        end = sched.section.time_to.strftime("%I:%M %p") 
+        professor_name = sched.section.professor.name if sched.section.professor else "TBA"
 
-        ws[f'C{i}'] = f"{day} {start} - {end}" 
-        ws[f'D{i}'] = sched.section.room
-        ws[f'E{i}'] = sched.section.professor.name
+        ws[f'A{index}'] = f"{code}: {title}"
+        ws[f'B{index}'] = section
+        ws[f'C{index}'] = f"{day} {start} - {end}"
+        ws[f'D{index}'] = sched.section.room
+        ws[f'E{index}'] = professor_name
 
-    border_style = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
-    for row in ws[f'A3:E{3 + len(schedule)}']:
+    border_style = Border(left=Side(style='thin'), right=Side(style='thin'),
+                          top=Side(style='thin'), bottom=Side(style='thin'))
+    
+    for row in ws[f'A8:E{8 + len(schedule)}']:
         for cell in row:
             cell.border = border_style
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Enrollment_Schedule.xlsx'
     wb.save(response)
-    
+
     return response
