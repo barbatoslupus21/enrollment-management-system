@@ -12,6 +12,7 @@ urlpatterns = [
     path('tagging/', views.finish_tagging, name='tagging'),
     path('schedule/', views.student_schedule, name='student-schedule'),
     path('student-overview/', views.student_overview, name='student-overview'),
+    path('print-schedule/', views.export_schedule, name='print-schedule'),
     
     # Professor
     path('professor/', views.professor_overview, name='professor-overview'),

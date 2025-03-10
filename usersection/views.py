@@ -4,6 +4,9 @@ from django.db.models import Sum
 from django.utils import timezone
 from django.utils.timezone import now
 from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, Border, Side
+from django.http import HttpResponse
 from django.contrib import messages
 from django.http import JsonResponse
 from homepage.models import System_users, UserInformation, Professor
@@ -281,3 +284,49 @@ def submit_profInfo(request):
         return redirect('information')
 
     return redirect('information')
+
+@login_required
+def export_schedule(request):
+    schedule = SectionStudents.objects.filter(student=request.user).all()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Enrolled Schedule"
+
+    ws['A1'] = "Trimex Colleges Inc."
+    ws['A1'].font = Font(bold=True)
+    ws['A2'] = "Unofficial Copy of Enrollment Schedule"
+    ws['A2'].font = Font(bold=True)
+
+    headers = [
+        "Subject", "Section", "Schedule", "Room", "Professor"
+    ]
+    for col_num, header in enumerate(headers, start=1):
+        cell = ws.cell(row=3, column=col_num, value=header)
+        cell.font = Font(bold=True)
+
+    for i, sched in enumerate(schedule, start=4):
+        code = sched.section.subject.course_code
+        title = sched.section.subject.course_title
+
+        ws[f'A{i}'] = f"{code}: {title}"
+        ws[f'B{i}'] = sched.section.section
+
+        day = sched.section.day[:3]  
+        start = sched.section.time_from.strftime("%I:%M %p") 
+        end = sched.section.time_to.strftime("%I:%M %p") 
+
+        ws[f'C{i}'] = f"{day} {start} - {end}" 
+        ws[f'D{i}'] = sched.section.room
+        ws[f'E{i}'] = sched.section.professor.name
+
+    border_style = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+    for row in ws[f'A3:E{3 + len(schedule)}']:
+        for cell in row:
+            cell.border = border_style
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Enrollment_Schedule.xlsx'
+    wb.save(response)
+    
+    return response

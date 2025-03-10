@@ -13,17 +13,52 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="title-font pb-3">Your Scheduled Subject</h2>
-                    <div class="search-wrapper">
-                        <button class="icon-button" onclick="toggleSearch()">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#736b68" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                          </svg>
-    
-                        </button>
-                        <div class="search-input" id="searchContainer">
-                          <input type="text" id="searchInput" placeholder="Search..." oninput="searchJO()">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="search-wrapper">
+                            <button class="icon-button" onclick="toggleSearch()">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#736b68" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                              </svg>
+        
+                            </button>
+                            <div class="search-input" id="searchContainer">
+                              <input type="text" id="searchInput" placeholder="Search..." oninput="searchJO()">
+                            </div>
+                        </div>
+
+                        {% if request.user.user_section.exists %}
+                            <button type="button" class="normal-button px-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="30px" fill="#736b68" class="m-0 p-0">
+                                    <path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z"/>
+                                </svg>
+                            </button>
+                        {% endif %}
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Print Unofficial Enrollment Schedule?</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>You are about to print an <strong>unofficial</strong> copy of your enrollment schedule.</p>
+
+                                    <strong>Disclaimer:</strong>
+                                    <p>This printout is not an Official Registration Form. Official Registration Forms are available at the Accounting Department.</p>
+                                    <p>Do you want to proceed with printing the unofficial copy?</p>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="normal-button" data-bs-dismiss="modal">Close</button>
+                                <a href="{% url "print-schedule" %}"><button type="button" class="submit-button">Save changes</button></a>
+                                </div>
+                            </div>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
                 
                 <!-- List of subjects -->
